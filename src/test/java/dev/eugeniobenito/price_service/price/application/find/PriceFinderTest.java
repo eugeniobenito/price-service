@@ -17,11 +17,13 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PriceFinderTest {
-
     @Mock
     private PriceRepository priceRepository;
-
     private PriceFinder priceFinder;
+
+    private static final int PRODUCT_ID = 1;
+    private static final int BRAND_ID = 2;
+    private static final LocalDateTime APPLICATION_DATE = LocalDateTime.now();
 
     @BeforeEach
     void setUp() {
@@ -31,18 +33,14 @@ class PriceFinderTest {
     @Test
     void shouldFindPriceByTimeAndBrand() {
         // GIVEN
-        LocalDateTime applicationDate = LocalDateTime.now();
-        int productId = 1;
-        int brandId = 2;
+        Price expectedPrice = PriceMother.randomFromProductAndBrandId(PRODUCT_ID, BRAND_ID);
 
-        Price expectedPrice = PriceMother.randomFromProductAndBrandId(productId, brandId);
-
-        when(priceRepository.findByTimeProductAndBrand(productId, brandId, applicationDate))
+        when(priceRepository.findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
                 .thenReturn(Optional.of(expectedPrice));
 
         // WHEN
         FindPriceResponse actualPrice =
-                assertDoesNotThrow(() -> priceFinder.findPriceByTimeAndBrand(productId, brandId, applicationDate));
+                assertDoesNotThrow(() -> priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE));
 
         // THEN
         assertAll(
@@ -52,24 +50,20 @@ class PriceFinderTest {
             () -> assertEquals(expectedPrice.getStartDate(), actualPrice.startDate()),
             () -> assertEquals(expectedPrice.getEndDate(), actualPrice.endDate())
         );
-        verify(priceRepository, times(1)).findByTimeProductAndBrand(productId, brandId, applicationDate);
+        verify(priceRepository, times(1)).findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
     }
 
     @Test
     void shouldReturnNullWhenNoPriceIsFound() {
         // GIVEN
-        LocalDateTime applicationDate = LocalDateTime.now();
-        int productId = 1;
-        int brandId = 2;
-
-        when(priceRepository.findByTimeProductAndBrand(productId, brandId, applicationDate))
+        when(priceRepository.findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
                 .thenReturn(Optional.empty());
 
         // WHEN
-        FindPriceResponse actualPrice = priceFinder.findPriceByTimeAndBrand(productId, brandId, applicationDate);
+        FindPriceResponse actualPrice = priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
 
         // THEN
         assertNull(actualPrice);
-        verify(priceRepository, times(1)).findByTimeProductAndBrand(productId, brandId, applicationDate);
+        verify(priceRepository, times(1)).findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
     }
 }
