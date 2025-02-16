@@ -3,6 +3,7 @@ package dev.eugeniobenito.price_service.price.infrastructure.persistence;
 import dev.eugeniobenito.price_service.price.domain.Price;
 import dev.eugeniobenito.price_service.price.domain.PriceMother;
 import dev.eugeniobenito.price_service.price.infrastructure.persistence.entity.PriceEntity;
+import dev.eugeniobenito.price_service.price.infrastructure.persistence.entity.PriceEntityMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import(H2PriceRepository.class)
+@Import({H2PriceRepository.class, PriceEntityMapperImpl.class})
 class H2PriceRepositoryIT {
     @Autowired
     private H2PriceRepository h2PriceRepository;

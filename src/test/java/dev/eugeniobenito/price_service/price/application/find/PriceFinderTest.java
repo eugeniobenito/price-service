@@ -1,5 +1,6 @@
 package dev.eugeniobenito.price_service.price.application.find;
 
+import dev.eugeniobenito.price_service.price.application.PriceMapper;
 import dev.eugeniobenito.price_service.price.domain.Price;
 import dev.eugeniobenito.price_service.price.domain.PriceMother;
 import dev.eugeniobenito.price_service.price.domain.PriceRepository;
@@ -19,6 +20,8 @@ import static org.mockito.Mockito.*;
 class PriceFinderTest {
     @Mock
     private PriceRepository priceRepository;
+    @Mock
+    private PriceMapper priceMapper;
     private PriceFinder priceFinder;
 
     private static final int PRODUCT_ID = 1;
@@ -27,7 +30,7 @@ class PriceFinderTest {
 
     @BeforeEach
     void setUp() {
-        priceFinder = new PriceFinder(priceRepository);
+        priceFinder = new PriceFinder(priceRepository, priceMapper);
     }
 
     @Test
@@ -37,6 +40,16 @@ class PriceFinderTest {
 
         when(priceRepository.findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
                 .thenReturn(Optional.of(expectedPrice));
+
+        FindPriceResponse mappedResponse = new FindPriceResponse(
+                expectedPrice.getProductId(),
+                expectedPrice.getBrandId(),
+                expectedPrice.getStartDate(),
+                expectedPrice.getEndDate(),
+                expectedPrice.getAmount()
+        );
+
+        when(priceMapper.toResponse(expectedPrice)).thenReturn(mappedResponse);
 
         // WHEN
         FindPriceResponse actualPrice =
@@ -51,6 +64,7 @@ class PriceFinderTest {
             () -> assertEquals(expectedPrice.getEndDate(), actualPrice.endDate())
         );
         verify(priceRepository, times(1)).findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
+        verify(priceMapper, times(1)).toResponse(expectedPrice);
     }
 
     @Test
@@ -65,5 +79,6 @@ class PriceFinderTest {
         // THEN
         assertNull(actualPrice);
         verify(priceRepository, times(1)).findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
+        verify(priceMapper, never()).toResponse(any());
     }
 }
