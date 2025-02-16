@@ -4,6 +4,8 @@ import dev.eugeniobenito.price_service.price.application.PriceMapper;
 import dev.eugeniobenito.price_service.price.domain.Price;
 import dev.eugeniobenito.price_service.price.domain.PriceMother;
 import dev.eugeniobenito.price_service.price.domain.PriceRepository;
+import dev.eugeniobenito.price_service.shared.domain.exception.ApplicationException;
+import dev.eugeniobenito.price_service.shared.domain.exception.PriceError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,16 +70,17 @@ class PriceFinderTest {
     }
 
     @Test
-    void shouldReturnNullWhenNoPriceIsFound() {
+    void shouldThrowApplicationExceptionWhenNoPriceIsFound() {
         // GIVEN
         when(priceRepository.findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
                 .thenReturn(Optional.empty());
 
-        // WHEN
-        FindPriceResponse actualPrice = priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
+        // WHEN & THEN
+        ApplicationException exception =
+                assertThrows(ApplicationException.class, () -> priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE));
 
-        // THEN
-        assertNull(actualPrice);
+        assertEquals(PriceError.PRICE_NOT_FOUND.getMessage(), exception.getMessage());
+        assertEquals(PriceError.PRICE_NOT_FOUND.getStatus(), exception.getStatus());
         verify(priceRepository, times(1)).findByTimeProductAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE);
         verify(priceMapper, never()).toResponse(any());
     }

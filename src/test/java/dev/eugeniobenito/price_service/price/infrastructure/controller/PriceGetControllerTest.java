@@ -2,6 +2,8 @@ package dev.eugeniobenito.price_service.price.infrastructure.controller;
 
 import dev.eugeniobenito.price_service.price.application.find.FindPriceResponse;
 import dev.eugeniobenito.price_service.price.application.find.PriceFinder;
+import dev.eugeniobenito.price_service.shared.domain.exception.ApplicationException;
+import dev.eugeniobenito.price_service.shared.domain.exception.PriceError;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -72,7 +74,7 @@ public class PriceGetControllerTest {
     void shouldReturn404NotFoundWhenNoPriceIsFound() throws Exception {
         // GIVEN
         when(priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
-                .thenReturn(null);
+                .thenThrow(new ApplicationException(PriceError.PRICE_NOT_FOUND));
 
         // WHEN & THEN
         mockMvc.perform(get(API_URL))
