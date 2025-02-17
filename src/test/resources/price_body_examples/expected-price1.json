@@ -3,5 +3,7 @@
   "brandId": 1,
   "startDate": "2020-06-14T00:00:00",
   "endDate": "2020-12-31T23:59:59",
-  "price": 35.50
+  "priceList": 1,
+  "price": 35.50,
+  "currency": "EUR"
 }

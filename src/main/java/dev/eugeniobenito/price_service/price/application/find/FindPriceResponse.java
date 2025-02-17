@@ -8,5 +8,7 @@ public record FindPriceResponse(
         Integer brandId,
         LocalDateTime startDate,
         LocalDateTime endDate,
-        BigDecimal price) {
+        Integer priceList,
+        BigDecimal price,
+        String currency) {
 }

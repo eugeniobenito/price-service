@@ -8,5 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PriceMapper {
     @Mapping(target = "price", source = "amount")
+    @Mapping(target = "currency", source = "curr")
     FindPriceResponse toResponse(Price price);
 }

@@ -48,7 +48,9 @@ class PriceFinderTest {
                 expectedPrice.getBrandId(),
                 expectedPrice.getStartDate(),
                 expectedPrice.getEndDate(),
-                expectedPrice.getAmount()
+                expectedPrice.getPriceList(),
+                expectedPrice.getAmount(),
+                expectedPrice.getCurr()
         );
 
         when(priceMapper.toResponse(expectedPrice)).thenReturn(mappedResponse);

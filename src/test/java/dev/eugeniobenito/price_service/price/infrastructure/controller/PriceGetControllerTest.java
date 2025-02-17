@@ -50,7 +50,9 @@ public class PriceGetControllerTest {
                 BRAND_ID,
                 LocalDateTime.parse("2020-06-14T00:00:00"),
                 LocalDateTime.parse("2020-12-31T23:59:59"),
-                new BigDecimal("35.5")
+                1,
+                new BigDecimal("35.5"),
+                "EUR"
         );
 
         when(priceFinder.findPriceByTimeAndBrand(PRODUCT_ID, BRAND_ID, APPLICATION_DATE))
